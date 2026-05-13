@@ -1,15 +1,16 @@
 drive = "\\\\.\\G:"  #Open Drive as raw bytes
 fileD=open(drive, "rb")
-size = 512
-byte = fileD.read(size)
-offs=0
-drec = False
-rcvd = 0
+size = 512 # size of bytes to read
+byte = fileD.read(size) # read size bytes
+offs=0    #Offset location
+drec = False   # recovery mode
+rcvd = 0   # Recovered file ID
 while byte:
     found = byte.find(b'\xff\xd8\xff\xe0\x00\x10\x4a\x46')
     if found >=0:
         drec = True
         print("Found JPG at location:" +str(hex(found+(size*offs)))+ "======")
+        #now let's creat recovered file and search for end signature
         fileN = open ('1\\' + str(rcvd)+ '.jpg', 'wb')
         fileN.write(byte[found:])
         while drec:
