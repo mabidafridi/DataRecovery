@@ -10,19 +10,21 @@ while byte:
     if found >=0:
         drec = True
         print("Found JPG at location:" +str(hex(found+(size*offs)))+ "======")
-        fileN = open ('1\\' + str(hex(found+(size*offs))), 'wb')
+        fileN = open ('1\\' + str(rcvd)+ '.jpg', 'wb')
         fileN.write(byte[found:])
         while drec:
             byte = fileD.read(size)
-        if byte.find(b'\xff\xd9') != -1:
-            fileN.write(byte[:byte.find(b'\xff\xd9')+2])
-            fileN.close()
-            print("End of JPG at location:" +str(hex(found+(size*offs)))+ "======")
-            drec = False
-        else:
-            fileN.write(byte)
+            bfind = byte.find(b'\xff\xd9')
+            if bfind >=0:
+                fileN.write(byte[:bfind+2])
+                fileD.seek((offs+1)*size)
+                print("Wrote JPG at location:" +str((rcvd)+ '.jpg ======'))
+                drec = False
+                rcvd += 1
+                fileN.close()
+            else:
+                fileN.write(byte)
     byte = fileD.read(size)
-    offs+=1
-    
+    offs += 1
 fileD.close()
         
